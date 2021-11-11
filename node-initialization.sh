@@ -18,3 +18,9 @@ rm chefdk_4.9.7-1_amd64.deb
 echo -en '### installed ###\n
 $(git --version)
 $(chef -v)' > installed
+
+# Download the Chef cookbook
+git clone https://github.com/isaacTadela/Chef.git
+
+# Run the cookbook
+sudo chef-solo -c $HOME/Chef/solo.rb -j $HOME/Chef/runlist.json --chef-license accept
