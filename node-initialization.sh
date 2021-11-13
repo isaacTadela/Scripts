@@ -54,7 +54,7 @@ template {
   }
 }" > $HOME/Chef/script/consul-configuration.hcl
 
-
+#
 # Run the cookbook
 echo 'run: sudo chef-solo -c $HOME/Chef/solo.rb -j $HOME/Chef/runlist.json --chef-license accept'
 # echo 'run: sudo chef-solo -c $HOME/Chef/solo.rb -j $HOME/Chef/runlist.json --chef-license accept'
