@@ -126,12 +126,13 @@ sudo systemctl enable grafana-server.service
 # Output all tokens and keys to 'Tokens':
 echo -en "### Tokens and Keys ###\n 
 JENKINS_PASS=$JENKINS_PASS\n
-$(vault operator init)" > Tokens 
-
+$(vault operator init)
+"> Tokens 
 
 # Output all installed versions to 'installed' for tracking:
 export MY_PUBLIC_IP=$(curl ifconfig.me)
-echo '### installed ###\n
+
+echo -en "### installed ###\n
 $(git --version)
 $(aws --version)
 $(java --version)
@@ -145,4 +146,4 @@ Jenkines is on http://$MY_PUBLIC_IP:8080
 Vault is on http://$MY_PUBLIC_IP:8200
 Consul is on http://$MY_PUBLIC_IP:8500
 Grafana is on http://$MY_PUBLIC_IP:3000
-' > installed
+"> installed
