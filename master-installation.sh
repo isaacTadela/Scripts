@@ -65,6 +65,7 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/vault.service
 
+export VAULT_ADDR='http://127.0.0.1:8200'
 echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
 
