@@ -15,9 +15,9 @@ sudo dpkg -i chefdk_4.9.7-1_amd64.deb
 rm chefdk_4.9.7-1_amd64.deb
 
 # Check all installed:
-echo -en '### installed ###\n
+echo -en "### installed ###\n
 $(git --version)
-$(chef -v)' > installed
+$(chef -v)" > installed
 
 # Download the Chef cookbook
 cd $HOME && git clone https://github.com/isaacTadela/Chef.git
