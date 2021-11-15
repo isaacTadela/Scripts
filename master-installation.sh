@@ -6,16 +6,16 @@ sudo apt update < "/dev/null"
 sudo apt -y upgrade < "/dev/null"
 
 # Install Git, unzip, tree, AWScli, Java11
-sudo apt-get install git=1:2.25.1-1ubuntu3 -y
-sudo apt-get install unzip=6.0-25ubuntu1
-sudo apt-get install tree=1.8.0-1
+sudo apt install git=1:2.25.1-1ubuntu3 -y
+sudo apt install unzip=6.0-25ubuntu1
+sudo apt install tree=1.8.0-1
 sudo apt -y install awscli=1.18.69-1ubuntu0.20.04.1
 sudo apt install openjdk-11-jdk=11.0.11+9-0ubuntu2~20.04 -y < "/dev/null"
 
 # Jenkines Long Term Support:
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
 sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt-get update
+sudo apt update
 sudo apt install jenkins=2.303.3 -y < "/dev/null"
 export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
@@ -65,6 +65,7 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/vault.service
 
+# Set VAULT_ADDR for vault init 
 export VAULT_ADDR='http://127.0.0.1:8200'
 echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
@@ -108,12 +109,12 @@ sudo systemctl status consul --no-pager
 sudo systemctl enable consul.service  
 
 # Grafana the latest OSS edition
-sudo apt-get install -y apt-transport-https < "/dev/null"
-sudo apt-get install -y software-properties-common wget < "/dev/null"
+sudo apt install -y apt-transport-https < "/dev/null"
+sudo apt install -y software-properties-common wget < "/dev/null"
 wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-sudo apt-get update
-sudo apt-get install grafana < "/dev/null"
+sudo apt update
+sudo apt install grafana < "/dev/null"
 sudo systemctl daemon-reload --no-pager
 sudo systemctl start grafana-server --no-pager
 
@@ -129,9 +130,16 @@ JENKINS_PASS=$JENKINS_PASS\n
 $(vault operator init)
 "> Tokens 
 
-# Output all installed versions to 'installed' for tracking:
-export MY_PUBLIC_IP=$(curl ifconfig.me)
+# Set env variables for Terraform 
+export TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200
+echo TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200 | sudo tee -a /etc/environment  
 
+# VAULT_TOKEN
+# export TF_VAR_VAULT_TOKEN=
+# echo TF_VAR_VAULT_TOKEN=
+
+
+# Output all installed versions to 'installed' for tracking:
 echo -en "### installed ###\n
 $(git --version)
 $(aws --version)
