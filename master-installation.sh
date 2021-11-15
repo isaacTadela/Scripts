@@ -21,7 +21,6 @@ export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
 sudo systemctl start jenkins
-# sudo systemctl status jenkins --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable jenkins.service  
  
@@ -70,8 +69,8 @@ export VAULT_ADDR='http://127.0.0.1:8200'
 echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
 
-sudo systemctl start vault --no-pager
 sudo systemctl daemon-reload --no-pager 
+sudo systemctl start vault --no-pager
 sudo systemctl status vault --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable vault.service  
@@ -115,9 +114,10 @@ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 sudo apt update
 sudo apt install grafana < "/dev/null"
+
 sudo systemctl daemon-reload --no-pager
 sudo systemctl start grafana-server --no-pager
-
+sudo systemctl status grafana-server --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable grafana-server.service  
  
