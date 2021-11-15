@@ -20,9 +20,10 @@ sudo apt install jenkins=2.303.3 -y < "/dev/null"
 export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
-sudo systemctl start jenkins
 # Configure the servers to start at boot
 sudo systemctl enable jenkins.service  
+sudo systemctl start jenkins --no-pager
+sudo systemctl status jenkins --no-pager
  
 # Hashicorp Terraform:
 wget https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
@@ -68,12 +69,11 @@ WantedBy=multi-user.target' | sudo tee /etc/systemd/system/vault.service
 export VAULT_ADDR='http://127.0.0.1:8200'
 echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
-
 sudo systemctl daemon-reload --no-pager 
-sudo systemctl start vault --no-pager
-sudo systemctl status vault --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable vault.service  
+sudo systemctl start vault --no-pager
+sudo systemctl status vault --no-pager
 
 
 # Hashicorp Consul: 
@@ -102,10 +102,10 @@ echo '{
 }' | sudo tee /etc/consul.d/consul.hcl
  
 sudo systemctl daemon-reload
-sudo systemctl start consul
-sudo systemctl status consul --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable consul.service  
+sudo systemctl start consul --no-pager
+sudo systemctl status consul --no-pager
 
 # Grafana the latest OSS edition
 sudo apt install -y apt-transport-https < "/dev/null"
@@ -116,10 +116,10 @@ sudo apt update
 sudo apt install grafana < "/dev/null"
 
 sudo systemctl daemon-reload --no-pager
-sudo systemctl start grafana-server --no-pager
-sudo systemctl status grafana-server --no-pager
 # Configure the servers to start at boot
 sudo systemctl enable grafana-server.service  
+sudo systemctl start grafana-server --no-pager
+sudo systemctl status grafana-server --no-pager
  
 
 ## Save the vault unseal keys and token, these are only generated *once* 
