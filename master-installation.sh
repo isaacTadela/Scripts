@@ -147,3 +147,5 @@ Vault is on http://$MY_PUBLIC_IP:8200
 Consul is on http://$MY_PUBLIC_IP:8500
 Grafana is on http://$MY_PUBLIC_IP:3000
 "> installed
+
+clear; cat installed;
