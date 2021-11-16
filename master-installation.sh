@@ -23,9 +23,6 @@ sudo systemctl enable jenkins.service
 sudo systemctl start jenkins --no-pager
 sudo systemctl status jenkins --no-pager
 
-export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
-echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
-
 # Hashicorp Terraform:
 wget https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
 unzip terraform_1.0.9_linux_amd64.zip < "/dev/null"
@@ -66,9 +63,6 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/vault.service
 
-# Set VAULT_ADDR for vault init 
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
 sudo systemctl daemon-reload --no-pager 
 # Configure the servers to start at boot
@@ -122,6 +116,18 @@ sudo systemctl enable grafana-server.service
 sudo systemctl start grafana-server --no-pager
 sudo systemctl status grafana-server --no-pager
  
+ 
+export JENKINS_PASS='$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)'
+echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
+
+# Set VAULT_ADDR for vault init 
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
+
+# Set env variables for Terraform 
+export TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200
+echo TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200 | sudo tee -a /etc/environment  
+
 
 ## Save the vault unseal keys and token, these are only generated *once* 
 ## and should be saved and moved to a safe place
@@ -130,10 +136,6 @@ echo -en "### Tokens and Keys ###\n
 JENKINS_PASS=$JENKINS_PASS\n
 $(vault operator init)
 "> Tokens 
-
-# Set env variables for Terraform 
-export TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200
-echo TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200 | sudo tee -a /etc/environment  
 
 # VAULT_TOKEN
 # export TF_VAR_VAULT_TOKEN=
