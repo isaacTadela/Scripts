@@ -17,14 +17,15 @@ wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key 
 sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo apt update
 sudo apt install jenkins=2.303.3 -y < "/dev/null"
-export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
-echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
 # Configure the servers to start at boot
 sudo systemctl enable jenkins.service  
 sudo systemctl start jenkins --no-pager
 sudo systemctl status jenkins --no-pager
- 
+
+export JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
+echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
+
 # Hashicorp Terraform:
 wget https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
 unzip terraform_1.0.9_linux_amd64.zip < "/dev/null"
