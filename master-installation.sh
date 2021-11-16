@@ -116,7 +116,11 @@ sudo systemctl enable grafana-server.service
 sudo systemctl start grafana-server --no-pager
 sudo systemctl status grafana-server --no-pager
  
+# Set AWS cli creds  
+echo AWS_ACCESS_KEY_ID= | sudo tee -a /etc/environment 
+echo AWS_SECRET_ACCESS_KEY= | sudo tee -a /etc/environment  
  
+# Set jenkins password fo easier access   
 export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
@@ -127,6 +131,9 @@ echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 # Set env variables for Terraform 
 export TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200
 echo TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200 | sudo tee -a /etc/environment  
+
+export TF_VAR_MASTER_IP=$(curl ifconfig.me)
+echo TF_VAR_MASTER_IP=$(curl ifconfig.me) | sudo tee -a /etc/environment  
 
 
 ## Save the vault unseal keys and token, these are only generated *once* 
