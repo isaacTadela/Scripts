@@ -117,7 +117,7 @@ sudo systemctl start grafana-server --no-pager
 sudo systemctl status grafana-server --no-pager
  
  
-export JENKINS_PASS='$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)'
+export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
 # Set VAULT_ADDR for vault init 
