@@ -148,6 +148,7 @@ $(vault operator init)
 # export TF_VAR_VAULT_TOKEN=
 # echo TF_VAR_VAULT_TOKEN=
 
+export MY_PUBLIC_IP=$(curl ifconfig.me)
 
 # Output all installed versions to 'installed' for tracking:
 echo -en "### installed ###\n
