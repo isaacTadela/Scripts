@@ -124,6 +124,9 @@ echo AWS_SECRET_ACCESS_KEY= | sudo tee -a /etc/environment
 export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
+# save the password for other idea
+sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)' >> /var/lib/jenkins/pass"
+
 # Set VAULT_ADDR for vault init 
 export VAULT_ADDR='http://127.0.0.1:8200'
 echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
