@@ -188,4 +188,17 @@ Consul is on http://$MY_PUBLIC_IP:8500
 Grafana is on http://$MY_PUBLIC_IP:3000
 "> installed
 
-clear; cat installed;
+clear;
+
+echo '
+# Add your AWS credentials as environment variables for all users and Terraform
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID | sudo tee -a /etc/environment  
+echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY | sudo tee -a /etc/environment  
+export TF_VAR_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+export TF_VAR_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+echo TF_VAR_AWS_ACCESS_KEY_ID=$TF_VAR_AWS_ACCESS_KEY_ID | sudo tee -a /etc/environment  
+echo TF_VAR_AWS_SECRET_ACCESS_KEY=$TF_VAR_AWS_SECRET_ACCESS_KEY | sudo tee -a /etc/environment  '
+
+
