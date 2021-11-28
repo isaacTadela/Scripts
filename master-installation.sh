@@ -197,6 +197,8 @@ Consul is on http://$MY_PUBLIC_IP:8500
 Grafana is on http://$MY_PUBLIC_IP:3000
 "> installed
 
+git clone https://github.com/isaacTadela/Full-Deployment-pipeline.git
+
 clear;
 
 echo '
