@@ -127,17 +127,7 @@ echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | 
 # save the password for other idea
 sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)' >> /var/lib/jenkins/pass"
 
-# Set VAULT_ADDR for vault init 
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
-
-# Set env variables for Terraform 
-export TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200
-echo TF_VAR_VAULT_ADDR=$(curl ifconfig.me):8200 | sudo tee -a /etc/environment  
-
-export TF_VAR_MASTER_IP=$(curl ifconfig.me)
-echo TF_VAR_MASTER_IP=$(curl ifconfig.me) | sudo tee -a /etc/environment  
-
+export MY_PUBLIC_IP=$(curl ifconfig.me)
 
 ## Save the vault unseal keys and token, these are only generated *once* 
 ## and should be saved and moved to a safe place
@@ -148,15 +138,19 @@ $(vault operator init)
 "> Tokens 
 
 # Vault ENV variables
+# Set VAULT_ADDR for vault init 
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
+
 export VAULT_TOKEN=$(grep 'Initial Root Token:' Tokens | awk '{print $NF}')
 echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment  
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo VAULT_ADDR=$VAULT_ADDR | sudo tee -a /etc/environment  
 
 # Vault ENV variables for terraform
-export TF_VAR_MASTER_IP=$(curl ifconfig.me)
+# Set env variables for Terraform 
+export TF_VAR_MASTER_IP=$MY_PUBLIC_IP
+echo TF_VAR_MASTER_IP=$MY_PUBLIC_IP | sudo tee -a /etc/environment  
+
 export TF_VAR_VAULT_TOKEN=$VAULT_TOKEN
-echo TF_VAR_MASTER_IP=$TF_VAR_MASTER_IP | sudo tee -a /etc/environment  
 echo TF_VAR_VAULT_TOKEN=$TF_VAR_VAULT_TOKEN | sudo tee -a /etc/environment  
 
 # Vault auto-unseal
@@ -169,15 +163,11 @@ vault operator unseal $VAULT_KEY2
 vault operator unseal $VAULT_KEY3
 vault login $VAULT_TOKEN
 
-export MY_PUBLIC_IP=$(curl ifconfig.me)
-
-# Set VAULT_ADDR for vault init 
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
-
 # Set CONSUL_HTTP_ADDR for consul 
 export CONSUL_HTTP_ADDR='http://127.0.0.1:8500'
 echo CONSUL_HTTP_ADDR=$CONSUL_HTTP_ADDR | sudo tee -a /etc/environment  
+
+# Add the KV version=test
 consul kv put version test
 
 # Output all installed versions to 'installed' for tracking:
