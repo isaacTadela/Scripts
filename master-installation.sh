@@ -155,13 +155,16 @@ echo TF_VAR_VAULT_TOKEN=$TF_VAR_VAULT_TOKEN | sudo tee -a /etc/environment
 
 # Vault auto-unseal
 export VAULT_KEY1=$(grep 'Unseal Key 1:' Tokens | awk '{print $NF}')
+echo VAULT_KEY1=$VAULT_KEY1 | sudo tee -a /etc/environment  
 export VAULT_KEY2=$(grep 'Unseal Key 2:' Tokens | awk '{print $NF}')
+echo VAULT_KEY2=$VAULT_KEY2 | sudo tee -a /etc/environment  
 export VAULT_KEY3=$(grep 'Unseal Key 3:' Tokens | awk '{print $NF}')
+echo VAULT_KEY3=$VAULT_KEY3 | sudo tee -a /etc/environment  
 
-vault operator unseal $VAULT_KEY1
-vault operator unseal $VAULT_KEY2
-vault operator unseal $VAULT_KEY3
-vault login $VAULT_TOKEN
+sudo vault operator unseal $VAULT_KEY1
+sudo vault operator unseal $VAULT_KEY2
+sudo vault operator unseal $VAULT_KEY3
+sudo vault login $VAULT_TOKEN
 
 # Set CONSUL_HTTP_ADDR for consul 
 export CONSUL_HTTP_ADDR='http://127.0.0.1:8500'
