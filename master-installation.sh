@@ -129,6 +129,11 @@ sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminP
 
 export MY_PUBLIC_IP=$(curl ifconfig.me)
 
+# Vault ENV variables
+# Set VAULT_ADDR for vault init 
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
+
 ## Save the vault unseal keys and token, these are only generated *once* 
 ## and should be saved and moved to a safe place
 # Output all tokens and keys to 'Tokens':
@@ -136,11 +141,6 @@ echo -en "### Tokens and Keys ###\n
 JENKINS_PASS=$JENKINS_PASS\n
 $(vault operator init)
 "> Tokens 
-
-# Vault ENV variables
-# Set VAULT_ADDR for vault init 
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
 
 export VAULT_TOKEN=$(grep 'Initial Root Token:' Tokens | awk '{print $NF}')
 echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment  
