@@ -147,9 +147,27 @@ JENKINS_PASS=$JENKINS_PASS\n
 $(vault operator init)
 "> Tokens 
 
-# VAULT_TOKEN
-# export TF_VAR_VAULT_TOKEN=
-# echo TF_VAR_VAULT_TOKEN=
+# Vault ENV variables
+export VAULT_TOKEN=$(grep 'Initial Root Token:' Tokens | awk '{print $NF}')
+echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment  
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo VAULT_ADDR=$VAULT_ADDR | sudo tee -a /etc/environment  
+
+# Vault ENV variables for terraform
+export TF_VAR_MASTER_IP=$(curl ifconfig.me)
+export TF_VAR_VAULT_TOKEN=$VAULT_TOKEN
+echo TF_VAR_MASTER_IP=$TF_VAR_MASTER_IP | sudo tee -a /etc/environment  
+echo TF_VAR_VAULT_TOKEN=$TF_VAR_VAULT_TOKEN | sudo tee -a /etc/environment  
+
+# Vault auto-unseal
+export VAULT_KEY1=$(grep 'Unseal Key 1:' Tokens | awk '{print $NF}')
+export VAULT_KEY2=$(grep 'Unseal Key 2:' Tokens | awk '{print $NF}')
+export VAULT_KEY3=$(grep 'Unseal Key 3:' Tokens | awk '{print $NF}')
+
+vault operator unseal $VAULT_KEY1
+vault operator unseal $VAULT_KEY2
+vault operator unseal $VAULT_KEY3
+vault login $VAULT_TOKEN
 
 export MY_PUBLIC_IP=$(curl ifconfig.me)
 
