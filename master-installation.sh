@@ -171,6 +171,15 @@ vault login $VAULT_TOKEN
 
 export MY_PUBLIC_IP=$(curl ifconfig.me)
 
+# Set VAULT_ADDR for vault init 
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
+
+# Set CONSUL_HTTP_ADDR for consul 
+export CONSUL_HTTP_ADDR='http://127.0.0.1:8500'
+echo CONSUL_HTTP_ADDR=$CONSUL_HTTP_ADDR | sudo tee -a /etc/environment  
+consul kv put version test
+
 # Output all installed versions to 'installed' for tracking:
 echo -en "### installed ###\n
 $(git --version)
