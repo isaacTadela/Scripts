@@ -150,6 +150,9 @@ echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment
 export TF_VAR_MASTER_IP=$MY_PUBLIC_IP
 echo TF_VAR_MASTER_IP=$MY_PUBLIC_IP | sudo tee -a /etc/environment  
 
+export TF_VAR_VAULT_ADDR=$VAULT_ADDR
+echo TF_VAR_VAULT_ADDR=$TF_VAR_VAULT_ADDR | sudo tee -a /etc/environment  
+
 export TF_VAR_VAULT_TOKEN=$VAULT_TOKEN
 echo TF_VAR_VAULT_TOKEN=$TF_VAR_VAULT_TOKEN | sudo tee -a /etc/environment  
 
