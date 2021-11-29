@@ -124,10 +124,11 @@ echo AWS_SECRET_ACCESS_KEY= | sudo tee -a /etc/environment
 export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
 
-# save the password for other idea
+# save the jenkins password for other purpose (backup)
 sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)' >> /var/lib/jenkins/pass"
 
 export MY_PUBLIC_IP=$(curl ifconfig.me)
+echo "MY_PUBLIC_IP=$MY_PUBLIC_IP" | sudo tee -a /etc/environment
 
 # Vault ENV variables
 # Set VAULT_ADDR for vault init 
