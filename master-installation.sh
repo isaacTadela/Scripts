@@ -132,7 +132,7 @@ export MY_PUBLIC_IP=$(curl ifconfig.me)
 # Vault ENV variables
 # Set VAULT_ADDR for vault init 
 export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR='http://127.0.0.1:8200'" | sudo tee -a /etc/environment
+echo "VAULT_ADDR=$VAULT_ADDR" | sudo tee -a /etc/environment
 
 ## Save the vault unseal keys and token, these are only generated *once* 
 ## and should be saved and moved to a safe place
