@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # This script creates a Chef cookbook and have the option to run it
 #
 # The script requires the exported environment variables:
@@ -9,14 +11,14 @@
 #
 # If you run this cookbook it will install unzip, mysql-client, awscli, NodeJS, consul-template, download my node appliction and Finally run my app
 #
-# It will use consul-template to fetch temporary AWS credentials from Vault 
+# It will use consul-template to fetch temporary AWS credentials from Vault
 # and get from Consul the latest version tag of my app which reside in an S3 bucket
 #
 #
 # In terms of Chef-solo the flow of things is:
-# start a Chef node attached with a     *role* 
-# runs the                              *recipe* 
-# that generate a file by a             *template* 
+# start a Chef node attached with a     *role*
+# runs the                              *recipe*
+# that generate a file by a             *template*
 # with dynamically injected             *attributes*
 # witch get override_attributes by the  *role*
 
@@ -40,7 +42,7 @@ wget https://releases.hashicorp.com/consul-template/0.27.0/consul-template_0.27.
 unzip consul-template_0.27.0_linux_amd64.zip
 rm consul-template_0.27.0_linux_amd64.zip
 sudo mv consul-template /usr/local/bin/' > $HOME/Chef/script/consul-installation.sh
- 
+
 # Create the configuration file for consul-template
 echo 'vault {
 # Specified via the environment variable VAULT_ADDR, This is the address of the Vault leader.
@@ -70,7 +72,7 @@ consul {
  #   password = "test"
  # }
 }
- 
+
 log_level = "warn"
 
 # render the role with a new version value, temporary aws credentials and re-run Chef-solo
@@ -100,7 +102,7 @@ echo '{
 ]
 }' > $HOME/Chef/script/consul-mysql-npm-role.tpl
 
-# to test run only consul-template to can run 
+# to test run only consul-template to can run
 # consul-template -config $HOME/Chef/script/consul-configuration.hcl > $HOME/consul-template.log 2>&1 &
 
 # Generate cookbook
@@ -130,7 +132,7 @@ echo '{
 ]
 }' > $HOME/Chef/roles/consul-mysql-npm.json
 
-# Create the Chef default recipe 
+# Create the Chef default recipe
 echo '
 package "unzip" do
    action :install
@@ -139,11 +141,11 @@ package "unzip" do
  package "mysql-client" do
    action :install
  end
- 
+
  package "awscli" do
    action :install
  end
- 
+
 # for Debian and Ubuntu based Linux distributions the Node.js binary distributions are available from NodeSource
  execute "Node.js binary" do
    command "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs"
@@ -164,7 +166,7 @@ execute "run consul-temaplte" do
    source node["consul-mysql-npm"]["version"]
    mode '0644'
  end
- 
+
 bash "run myApp-installation.sh, npm install and start" do
    cwd "/home/"
    code <<-EOH
@@ -174,7 +176,7 @@ bash "run myApp-installation.sh, npm install and start" do
    EOH
  end
 '> $HOME/Chef/cookbooks/consul-mysql-npm/recipes/default.rb
-  
+
 # Create the Chef templates directory
 mkdir $HOME/Chef/cookbooks/consul-mysql-npm/templates && mkdir $HOME/Chef/cookbooks/consul-mysql-npm/templates/default
 
@@ -192,7 +194,7 @@ fi '> Chef/cookbooks/consul-mysql-npm/templates/default/Vers.erb
 # Create the attributes directory and the default file
 mkdir $HOME/Chef/cookbooks/consul-mysql-npm/attributes
 echo 'default["consul-mysql-npm"]["version"] = "Vers"' > $HOME/Chef/cookbooks/consul-mysql-npm/attributes/default.rb
- 
+
 # Generate Chef solo config files under the main Chef directory
 echo 'current_dir             = File.expand_path(File.dirname(__FILE__))
 file_cache_path         "#{current_dir}"
@@ -201,5 +203,5 @@ role_path               "#{current_dir}/roles"
 data_bag_path           "#{current_dir}/data_bags" ' > Chef/solo.rb
 
 
-# To run this Chef cookbook run the command 
+# To run this Chef cookbook run the command
 # sudo chef-solo -c $HOME/Chef/solo.rb -j $HOME/Chef/runlist.json --chef-license accept
