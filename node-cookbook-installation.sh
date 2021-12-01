@@ -3,15 +3,13 @@
 
 # This script creates a Chef cookbook and have the option to run it
 #
-# The script requires the exported environment variables:
+# The script requires the ChefDK for chef-solo and the exported environment variables:
 # VAULT_ADDR        - The ip of vault, e.g. 'http://35.181.48.199:8200'
 # VAULT_TOKEN       - The vault token use to access vault, e.g. 's.s.PKhDs2z6SGJBCcPC7wBXRqyk'
 # CONSUL_HTTP_ADDR  - API address to the local Consul agent although i used it to remote Consul server, e.g. 'http://35.181.48.199:8500'
 #
-#
 # If you run this cookbook it will install unzip, mysql-client, awscli, NodeJS, consul-template, download my node appliction and Finally run my app
 #
-# 
 # It will use consul-template to fetch temporary AWS credentials from Vault 
 # and get from Consul the latest version tag of my app which reside in an S3 bucket
 #
