@@ -34,7 +34,7 @@ rm consul-template_0.27.0_linux_amd64.zip
 sudo mv consul-template /usr/local/bin/' > $HOME/Chef/script/consul-installation.sh
  
 # Create the configuration file for consul-template
-echo "vault {
+echo 'vault {
 # Specified via the environment variable VAULT_ADDR, This is the address of the Vault leader.
 # address      = "http://$MASTER_IP:8200"
 
@@ -72,7 +72,7 @@ template {
   exec {
     command = "sudo chef-solo -c /home/Chef/solo.rb -j /home/Chef/runlist.json > /home/consul-template.log"
   }
-}" > $HOME/Chef/script/consul-configuration.hcl
+}' > $HOME/Chef/script/consul-configuration.hcl
 
 # Create the template for the Chef role with the values rendered from consul-template
 echo '{
@@ -123,16 +123,16 @@ echo '{
 }' > $HOME/Chef/roles/consul-mysql-npm.json
 
 # Create the Chef default recipe 
-echo "
-package 'unzip' do
+echo '
+package "unzip" do
    action :install
  end
 
- package 'mysql-client' do
+ package "mysql-client" do
    action :install
  end
  
- package 'awscli' do
+ package "awscli" do
    action :install
  end
  
@@ -151,21 +151,21 @@ execute "run consul-temaplte" do
    not_if "ps -A | grep consul-template"
  end
 
-# Create/Update myApp-installation.sh file using the tempalte file 'Vers.erb' and the role override_attributes
+# Create/Update myApp-installation.sh file using the tempalte file "Vers.erb" and the role override_attributes
  template "/home/Chef/script/myApp-installation.sh" do
    source node["consul-mysql-npm"]["version"]
    mode '0644'
  end
  
-bash 'run myApp-installation.sh, npm install and start' do
-   cwd '/home/'
+bash "run myApp-installation.sh, npm install and start" do
+   cwd "/home/"
    code <<-EOH
      sh /home/Chef/script/myApp-installation.sh > /home/myApp.log
      cd /home/Unofficial-Chevrolet-Auto-shop && npm install >> /home/myApp.log
      cd /home/Unofficial-Chevrolet-Auto-shop && node server.js & >> /home/myApp.log
    EOH
  end
-"> $HOME/Chef/cookbooks/consul-mysql-npm/recipes/default.rb
+'> $HOME/Chef/cookbooks/consul-mysql-npm/recipes/default.rb
   
 # Create the Chef templates directory
 mkdir $HOME/Chef/cookbooks/consul-mysql-npm/templates && mkdir $HOME/Chef/cookbooks/consul-mysql-npm/templates/default
