@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # This script creates a Chef cookbook and have the option to run it
 #
 # The script requires the exported environment variables:
