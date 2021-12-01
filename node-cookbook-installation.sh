@@ -3,7 +3,7 @@
 
 # This script creates a Chef cookbook and have the option to run it
 #
-# The script requires the ChefDK for chef-solo and the exported environment variables:
+# The script requires the exported environment variables:
 # VAULT_ADDR        - The ip of vault, e.g. 'http://35.181.48.199:8200'
 # VAULT_TOKEN       - The vault token use to access vault, e.g. 's.s.PKhDs2z6SGJBCcPC7wBXRqyk'
 # CONSUL_HTTP_ADDR  - API address to the local Consul agent although i used it to remote Consul server, e.g. 'http://35.181.48.199:8500'
@@ -21,6 +21,15 @@
 # with dynamically injected             *attributes*
 # witch get override_attributes by the  *role*
 
+
+# System
+sudo apt update < "/dev/null"
+sudo apt -y upgrade < "/dev/null"
+
+# install ChefDK for chef-solo:
+wget https://packages.chef.io/files/stable/chefdk/4.9.7/ubuntu/20.04/chefdk_4.9.7-1_amd64.deb
+sudo dpkg -i chefdk_4.9.7-1_amd64.deb
+rm chefdk_4.9.7-1_amd64.deb
 
 
 # Make the main directory and sub-directories
