@@ -49,13 +49,13 @@ listener "tcp" {
   tls_disable = 1
   
   # tls_disable = 0 , in case you want to use the tls_cert_file and tls_key_file
-  tls_cert_file = "/etc/letsencrypt/live/127.0.0.1/fullchain.pem"
-  tls_key_file = "/etc/letsencrypt/live/127.0.0.1/privkey.pem"
+  # tls_cert_file = "/etc/letsencrypt/live/127.0.0.1/fullchain.pem"
+  # tls_key_file = "/etc/letsencrypt/live/127.0.0.1/privkey.pem"
 }
 ui = true' | sudo tee /etc/vault/config.hcl
 
 echo '[Unit]
-Description=Vault
+Description="HashiCorp Vault - A tool for managing secrets"
 Documentation=https://www.vault.io/
 [Service]
 ExecStart=/usr/bin/vault server -config=/etc/vault/config.hcl
@@ -78,24 +78,30 @@ unzip consul_1.10.3_linux_amd64.zip < "/dev/null"
 rm consul_1.10.3_linux_amd64.zip
 sudo mv consul /usr/bin/
  
-# create a service file and move to /usr/bin/
-sudo echo "[Unit]
-Description=Consul
-Documentation=https://www.consul.io/
-[Service]
-ExecStart=/usr/bin/consul agent -server -ui -data-dir=/temp/consul -bootstrap-expect=1 -node=vault -bind=0.0.0.0 -config-dir=/etc/consul.d/
-ExecReload=/bin/kill -HUP $MAINPID
-LimitNOFILE=65536
-[Install]
-WantedBy=multi-user.target" | sudo tee /etc/systemd/system/consul.service
-
 sudo mkdir /etc/consul.d
 
 echo '{
-  "addresses": {
-    "http": "0.0.0.0"
-  }
+  "bootstrap_expect": 1,
+  "node_name": "Master node",
+  "bind_addr": "0.0.0.0",
+  "data_dir": "/temp/consul",
+  "datacenter": "my_dc",
+  "log_level": "INFO",
+  "server": true,
+  "addresses": { "http": "0.0.0.0" }
 }' | sudo tee /etc/consul.d/consul.hcl
+
+# create a service file and move to /usr/bin/
+sudo echo '[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+[Service]
+ExecStart=/usr/bin/consul agent -ui -config-dir=/etc/consul.d/
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+[Install]
+WantedBy=multi-user.target' | sudo tee /etc/systemd/system/consul.service
+
  
 sudo systemctl daemon-reload
 # Configure the servers to start at boot
