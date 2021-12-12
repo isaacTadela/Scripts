@@ -81,23 +81,35 @@ sudo mv consul /usr/bin/
 sudo mkdir /etc/consul.d
 
 echo '{
-  "bootstrap_expect": 1,
+  "server": true,
+  "bootstrap": true,
   "node_name": "Master node",
   "bind_addr": "0.0.0.0",
-  "data_dir": "/temp/consul",
+  "data_dir": "/tmp/consul",
   "datacenter": "my_dc",
   "log_level": "INFO",
-  "server": true,
-  "addresses": { "http": "0.0.0.0" }
+  "addresses" : {
+    "http": "0.0.0.0"
+  },
+  "enable_syslog": true,
+  "leave_on_terminate": true,
+  "log_file": "/home/consul.log"
 }' | sudo tee /etc/consul.d/consul.hcl
 
 # create a service file and move to /usr/bin/
 sudo echo '[Unit]
-Description="HashiCorp Consul - A service mesh solution"
+Description=HashiCorp Consul Client - A service mesh solution
+Requires=network-online.target
+After=network-online.target
 Documentation=https://www.consul.io/
 [Service]
-ExecStart=/usr/bin/consul agent -ui -config-dir=/etc/consul.d/
-ExecReload=/bin/kill -HUP $MAINPID
+EnvironmentFile=-/etc/sysconfig/consul
+ExecStart=/usr/bin/consul agent -config-dir=/etc/consul.d/
+ExecReload=/usr/bin/consul reload
+ExecStop=/usr/bin/consul leave
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
 LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/consul.service
