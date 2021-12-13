@@ -149,6 +149,9 @@ sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminP
 export MY_PUBLIC_IP=$(curl ifconfig.me)
 echo "MY_PUBLIC_IP=$MY_PUBLIC_IP" | sudo tee -a /etc/environment
 
+export MY_PRIVATE_IP=$(hostname -I | awk '{print $1}')
+echo "MY_PRIVATE_IP=$MY_PRIVATE_IP" | sudo tee -a /etc/environment
+
 # Vault ENV variables
 # Set VAULT_ADDR for vault init 
 export VAULT_ADDR='http://127.0.0.1:8200'
@@ -167,8 +170,11 @@ echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment
 
 # Vault ENV variables for terraform
 # Set env variables for Terraform 
-export TF_VAR_MASTER_IP=$MY_PUBLIC_IP
-echo TF_VAR_MASTER_IP=$MY_PUBLIC_IP | sudo tee -a /etc/environment  
+export TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP
+echo TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP | sudo tee -a /etc/environment  
+
+export TF_VAR_MY_PRIVATE_IP=$MY_PRIVATE_IP
+echo TF_VAR_MASTER_IP=$MY_PRIVATE_IP | sudo tee -a /etc/environment  
 
 export TF_VAR_VAULT_ADDR=$VAULT_ADDR
 echo TF_VAR_VAULT_ADDR=$TF_VAR_VAULT_ADDR | sudo tee -a /etc/environment  
