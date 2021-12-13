@@ -37,6 +37,8 @@ unzip vault_1.8.3_linux_amd64.zip < "/dev/null"
 rm vault_1.8.3_linux_amd64.zip 
 sudo mv vault /usr/bin/
 
+sudo mkdir /home/logs
+
 sudo mkdir /etc/vault
 echo '
 storage "consul" {
@@ -58,7 +60,7 @@ echo '[Unit]
 Description="HashiCorp Vault - A tool for managing secrets"
 Documentation=https://www.vault.io/
 [Service]
-ExecStart=/usr/bin/vault server -config=/etc/vault/config.hcl
+ExecStart=/usr/bin/vault server -config=/etc/vault/config.hcl > /home/logs/vault.log
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 [Install]
@@ -96,7 +98,7 @@ echo '{
   },
   "enable_syslog": true,
   "leave_on_terminate": true,
-  "log_file": "/home/consul.log"
+  "log_file": "/home/logs/consul.log"
 }' | sudo tee /etc/consul.d/consul.hcl
 
 # create a service file and move to /usr/bin/
