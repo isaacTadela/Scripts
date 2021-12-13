@@ -174,7 +174,7 @@ export TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP
 echo TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP | sudo tee -a /etc/environment  
 
 export TF_VAR_MY_PRIVATE_IP=$MY_PRIVATE_IP
-echo TF_VAR_MASTER_IP=$MY_PRIVATE_IP | sudo tee -a /etc/environment  
+echo TF_VAR_MY_PRIVATE_IP=$MY_PRIVATE_IP | sudo tee -a /etc/environment  
 
 export TF_VAR_VAULT_ADDR=$VAULT_ADDR
 echo TF_VAR_VAULT_ADDR=$TF_VAR_VAULT_ADDR | sudo tee -a /etc/environment  
