@@ -175,8 +175,8 @@ echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment
 
 # Vault ENV variables for terraform
 # Set env variables for Terraform 
-export TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP
-echo TF_VAR_MASTER_PUBLIC_IP=$MASTER_PUBLIC_IP | sudo tee -a /etc/environment  
+export TF_VAR_MASTER_PUBLIC_IP=$MY_PUBLIC_IP
+echo TF_VAR_MASTER_PUBLIC_IP=$MY_PUBLIC_IP | sudo tee -a /etc/environment  
 
 export TF_VAR_MASTER_PRIVATE_IP=$MY_PRIVATE_IP
 echo TF_VAR_MASTER_PRIVATE_IP=$MY_PRIVATE_IP | sudo tee -a /etc/environment  
