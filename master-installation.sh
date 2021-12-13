@@ -91,6 +91,9 @@ echo '{
   "addresses" : {
     "http": "0.0.0.0"
   },
+  "ui_config": {
+    "enabled": true
+  },
   "enable_syslog": true,
   "leave_on_terminate": true,
   "log_file": "/home/consul.log"
