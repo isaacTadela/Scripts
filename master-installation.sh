@@ -10,7 +10,7 @@ sudo apt install git=1:2.25.1-1ubuntu3 -y
 sudo apt install unzip=6.0-25ubuntu1
 sudo apt install tree=1.8.0-1
 sudo apt -y install awscli=1.18.69-1ubuntu0.20.04.1
-sudo apt install openjdk-11-jdk=11.0.11+9-0ubuntu2~20.04 -y < "/dev/null"
+sudo apt install openjdk-11-jdk=11* -y < "/dev/null"
 sudo apt install mysql-client-core-8.0 
 
 # Jenkines Long Term Support:
