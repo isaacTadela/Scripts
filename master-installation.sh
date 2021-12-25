@@ -109,7 +109,7 @@ echo "{
   \"bootstrap\": true,
   \"node_name\": \"Master node\",
   \"bind_addr\": \"0.0.0.0\",
-  \"data_dir\": \"/tmp/consul\",
+  \"data_dir\": \"/home/consul\",
   \"datacenter\": \"my_dc\",
   \"log_level\": \"INFO\",
   \"advertise_addr_wan\": \"$MY_PUBLIC_IP\",
