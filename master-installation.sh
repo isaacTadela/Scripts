@@ -13,6 +13,16 @@ sudo apt -y install awscli=1.18.69-1ubuntu0.20.04.1
 sudo apt install openjdk-11-jdk=11* -y < "/dev/null"
 sudo apt install mysql-client-core-8.0 
 
+# Set AWS cli creds  
+echo AWS_ACCESS_KEY_ID= | sudo tee -a /etc/environment 
+echo AWS_SECRET_ACCESS_KEY= | sudo tee -a /etc/environment  
+
+export MY_PUBLIC_IP=$(curl ifconfig.me)
+echo "MY_PUBLIC_IP=$MY_PUBLIC_IP" | sudo tee -a /etc/environment
+
+export MY_PRIVATE_IP=$(hostname -I | awk '{print $1}')
+echo "MY_PRIVATE_IP=$MY_PRIVATE_IP" | sudo tee -a /etc/environment
+
 # Jenkines Long Term Support:
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
 sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
@@ -23,6 +33,14 @@ sudo apt install jenkins=2.303.3 -y < "/dev/null"
 sudo systemctl enable jenkins.service  
 sudo systemctl start jenkins --no-pager
 sudo systemctl status jenkins --no-pager
+ 
+# Set jenkins password fo easier access   
+export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
+echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
+
+# save the jenkins password for the purpose of backup
+sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)' >> /var/lib/jenkins/pass"
+
 
 # Hashicorp Terraform:
 wget https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
@@ -73,6 +91,10 @@ sudo systemctl enable vault.service
 sudo systemctl start vault --no-pager
 sudo systemctl status vault --no-pager
 
+# Vault ENV variables, set VAULT_ADDR for vault init 
+export VAULT_ADDR='http://127.0.0.1:8200'
+echo "VAULT_ADDR=$VAULT_ADDR" | sudo tee -a /etc/environment
+
 
 # Hashicorp Consul: 
 wget https://releases.hashicorp.com/consul/1.10.3/consul_1.10.3_linux_amd64.zip
@@ -90,6 +112,7 @@ echo '{
   "data_dir": "/tmp/consul",
   "datacenter": "my_dc",
   "log_level": "INFO",
+  "advertise_addr_wan": "$MY_PUBLIC_IP",
   "addresses" : {
     "http": "0.0.0.0"
   },
@@ -140,27 +163,6 @@ sudo systemctl enable grafana-server.service
 sudo systemctl start grafana-server --no-pager
 sudo systemctl status grafana-server --no-pager
  
-# Set AWS cli creds  
-echo AWS_ACCESS_KEY_ID= | sudo tee -a /etc/environment 
-echo AWS_SECRET_ACCESS_KEY= | sudo tee -a /etc/environment  
- 
-# Set jenkins password fo easier access   
-export "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
-echo "JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)" | sudo tee -a /etc/environment
-
-# save the jenkins password for other purpose (backup)
-sudo sh -c "echo 'JENKINS_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)' >> /var/lib/jenkins/pass"
-
-export MY_PUBLIC_IP=$(curl ifconfig.me)
-echo "MY_PUBLIC_IP=$MY_PUBLIC_IP" | sudo tee -a /etc/environment
-
-export MY_PRIVATE_IP=$(hostname -I | awk '{print $1}')
-echo "MY_PRIVATE_IP=$MY_PRIVATE_IP" | sudo tee -a /etc/environment
-
-# Vault ENV variables
-# Set VAULT_ADDR for vault init 
-export VAULT_ADDR='http://127.0.0.1:8200'
-echo "VAULT_ADDR=$VAULT_ADDR" | sudo tee -a /etc/environment
 
 ## Save the vault unseal keys and token, these are only generated *once* 
 ## and should be saved and moved to a safe place
@@ -169,6 +171,7 @@ echo -en "### Tokens and Keys ###\n
 JENKINS_PASS=$JENKINS_PASS\n
 $(vault operator init)
 "> Tokens 
+
 
 export VAULT_TOKEN=$(grep 'Initial Root Token:' Tokens | awk '{print $NF}')
 echo VAULT_TOKEN=$VAULT_TOKEN | sudo tee -a /etc/environment  
@@ -230,7 +233,7 @@ git clone https://github.com/isaacTadela/Full-Deployment-pipeline.git
 clear;
 
 echo '
-# Add your AWS credentials as environment variables for all users and Terraform
+# Add your AWS credentials as environment variables for all users and Terraform environment variables
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID | sudo tee -a /etc/environment  
