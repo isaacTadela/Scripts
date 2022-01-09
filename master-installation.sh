@@ -104,25 +104,20 @@ sudo mv consul /usr/bin/
  
 sudo mkdir /etc/consul.d
 
-echo "{
-  \"server\": true,
-  \"bootstrap\": true,
-  \"node_name\": \"Master node\",
-  \"bind_addr\": \"0.0.0.0\",
-  \"data_dir\": \"/home/consul\",
-  \"datacenter\": \"my_dc\",
-  \"log_level\": \"INFO\",
-  \"advertise_addr_wan\": \"$MY_PUBLIC_IP\",
-  \"addresses\" : {
-    \"http\": \"0.0.0.0\"
-  },
-  \"ui_config\": {
-    \"enabled\": true
-  },
-  \"enable_syslog\": true,
-  \"leave_on_terminate\": true,
-  \"log_file\": \"/home/logs/consul.log\"
-}" | sudo tee /etc/consul.d/consul.hcl
+echo "
+data_dir = \"/home/consul\"
+client_addr = \"0.0.0.0\"
+ui_config{
+  enabled = true
+}
+server = true
+node_name = \"Master node\" 
+datacenter = \"my_dc\"
+bind_addr = \"0.0.0.0\"
+advertise_addr = \"$MY_PUBLIC_IP\" # public server ip
+bootstrap_expect=1
+log_file = \"/home/logs/consul.log\"
+log_rotate_max_files = 1" | sudo tee /etc/consul.d/consul.hcl
 
 # create a service file and move to /usr/bin/
 sudo echo '[Unit]
